@@ -1,0 +1,92 @@
+﻿@page
+@model ExpenseDashboard.Api.Pages.ViewExpensesModel
+
+@{
+    // ViewData["Title"] = "Add Expense";
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+}
+
+<link rel="stylesheet" href="~/css/expenses.css" />
+<link rel="stylesheet" href="/css/index.css" />
+
+<div class="container">
+    <div class="left-nav">
+        <div class="logo">💰 ExpenseTracker</div>
+        <ul>
+    <li class="@(currentPage == "/Index" ? "active" : "")">
+        <a asp-page="/Index">Dashboard</a>
+    </li>
+    <li class="@(currentPage == "/AddExpense" ? "active" : "")">
+        <a asp-page="/AddExpense">Add Expense</a>
+    </li>
+    <li class="@(currentPage == "/ViewExpenses" ? "active" : "")">
+        <a asp-page="/ViewExpenses">View Expenses</a>
+    </li>
+    <li class="@(currentPage == "/Reports" ? "active" : "")">
+        <a asp-page="/Reports">Reports</a>
+    </li>
+    <li class="@(currentPage == "/Settings" ? "active" : "")">
+        <a asp-page="/Settings">Settings</a>
+    </li>
+</ul>
+    </div>
+
+    <main class="main-content">
+        <div class="header">
+            <h2>All Expenses</h2>
+            <div class="search-filter">
+                <input type="text" id="searchBox" placeholder="Search" />
+                <select id="filterCategory">
+                    <option value="">All Categories</option>
+                    <option>Groceries</option>
+                    <option>Food & Drink</option>
+                    <option>Transport</option>
+                    <option>Online</option>
+                    <option>Coffee</option>
+                    <option>Fuel</option>
+                    <option>Rent & Utilities</option>
+                    <option>Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="expenseTable">
+            @await Html.PartialAsync("_ExpensesTablePartial", Model.Expenses
+    .OrderByDescending(e => e.Date)
+    .Take(10)
+    .ToList())
+
+
+        </div>
+    </main>
+
+    <aside class="summary-box">
+        <h4>Total Expenses</h4>
+        <p class="total">@Model.Expenses.Sum(x => x.Amount).ToString("C")</p>
+
+    </aside>
+</div>
+
+@section Scripts {
+    <script>
+        const searchBox = document.getElementById("searchBox");
+        const filterCategory = document.getElementById("filterCategory");
+        const rows = document.querySelectorAll(".expense-row");
+
+        function filterExpenses() {
+            const search = searchBox.value.toLowerCase();
+            const category = filterCategory.value.toLowerCase();
+
+            rows.forEach(row => {
+                const matchesSearch = row.textContent.toLowerCase().includes(search);
+                const matchesCategory = category === "" || row.dataset.category === category;
+
+                row.style.display = matchesSearch && matchesCategory ? "" : "none";
+            });
+        }
+
+        searchBox.addEventListener("keyup", filterExpenses);
+        filterCategory.addEventListener("change", filterExpenses);
+    </script>
+}
+

@@ -4,6 +4,7 @@ using ExpenseDashboard.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ExpenseDashboard.Api.Pages
 {
@@ -18,13 +19,25 @@ namespace ExpenseDashboard.Api.Pages
             _context = context;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            // Include category details for display
-            Expenses = _context.Expenses
+            // Load the latest 5 expenses only if there are any
+            var allExpenses = await _context.Expenses
                 .Include(e => e.Category)
                 .OrderByDescending(e => e.Date)
-                .ToList();
+                .ToListAsync();
+
+            Expenses = allExpenses.Any() ? allExpenses.Take(5).ToList() : new List<Expense>();
         }
+
+        public decimal TotalThisMonth => Expenses
+            .Where(e => e.Date.Month == System.DateTime.Now.Month && e.Date.Year == System.DateTime.Now.Year)
+            .Sum(e => e.Amount);
+
+        public decimal RemainingBudget => 10000 - TotalThisMonth;
+
+        public decimal TotalYTD => Expenses
+            .Where(e => e.Date.Year == System.DateTime.Now.Year)
+            .Sum(e => e.Amount);
     }
 }

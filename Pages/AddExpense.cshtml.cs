@@ -12,6 +12,8 @@ namespace ExpenseDashboard.Api.Pages
 
         [BindProperty]
         public Expense NewExpense { get; set; } = new Expense();
+
+        // Only display expenses after adding, so empty by default
         public List<Expense> Expenses { get; set; } = new List<Expense>();
 
         public List<Category> Categories { get; set; } = new();
@@ -21,13 +23,17 @@ namespace ExpenseDashboard.Api.Pages
             _context = context;
         }
 
-        public void OnGet()
+        
+        public async Task OnGetAsync()
         {
             Categories = _context.Categories.ToList();
-            Expenses = _context.Expenses
+            // Load the latest 5 expenses only if there are any
+            var allExpenses = await _context.Expenses
                 .Include(e => e.Category)
                 .OrderByDescending(e => e.Date)
-                .ToList();
+                .ToListAsync();
+
+            Expenses = allExpenses.Any() ? allExpenses.Take(5).ToList() : new List<Expense>();
         }
 
         public IActionResult OnPost()
@@ -44,8 +50,12 @@ namespace ExpenseDashboard.Api.Pages
             _context.Expenses.Add(NewExpense);
             _context.SaveChanges();
 
-            // Redirect to dashboard after saving
-            return RedirectToPage("/Index");
+            // After adding, show only the newly added expense
+            Expenses = new List<Expense> { NewExpense };
+            Categories = _context.Categories.ToList();
+
+            // Return to the same page so right panel updates
+            return Page();
         }
     }
 }

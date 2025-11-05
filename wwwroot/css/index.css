@@ -1,0 +1,44 @@
+﻿
+.left-nav {
+    flex-shrink: 0;
+    width: 220px;
+    height: 31rem;
+    background: #2f3a40;
+    color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    position: sticky;
+    top: 0;
+}
+
+    .left-nav .logo {
+        font-size: 18px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .left-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .left-nav li {
+        padding: 12px 0;
+        opacity: 0.9;
+        text-align: center;
+    }
+
+        .left-nav li a {
+            text-decoration: none;
+            color: #fff;
+            opacity: 0.9;
+            transition: opacity 0.2s ease;
+        }
+
+            .left-nav li a:hover,
+            .left-nav li.active a {
+                opacity: 1;
+                color: #06b6d4;
+            }

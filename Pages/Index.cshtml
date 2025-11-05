@@ -4,7 +4,9 @@
     ViewData["Title"] = "Dashboard";
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
 }
-<link rel="stylesheet" href="/css/site.css" />
+<link rel="stylesheet" href="wwwroot/css/site.css" />
+<link rel="stylesheet" href="/css/index.css" />
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="container">
@@ -76,21 +78,22 @@
 
             <!-- Recent Transactions -->
             <div class="recent" id="recentTx">
-                <h3>Recent Transactions</h3>
-                @if (Model.Expenses.Any())
-                {
-                    @foreach (var exp in Model.Expenses
-                        .OrderByDescending(e => e.Date)
-                        .Take(5))
-                    {
-                        <div>@exp.Title - ₹@exp.Amount.ToString("0.00") (@exp.Date.ToShortDateString())</div>
-                    }
-                }
-                else
-                {
-                    <p>No recent expenses.</p>
-                }
-            </div>
+    <h3>Recent Transactions</h3>
+    @if (Model.Expenses.Any())
+    {
+        @foreach (var exp in Model.Expenses
+            .OrderByDescending(e => e.Date)
+            .Take(5))
+        {
+            <div>@exp.Title - ₹@exp.Amount.ToString("0.00") (@exp.Date.ToShortDateString())</div>
+        }
+    }
+    else
+    {
+        <p>No recent expenses.</p>
+    }
+</div>
+
         </div>
     </div>
 </div>
