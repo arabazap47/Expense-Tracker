@@ -1,0 +1,98 @@
+﻿@page
+@model ExpenseDashboard.Api.Pages.AddExpenseModel
+@{
+    ViewData["Title"] = "Add Expense";
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+}
+<link rel="stylesheet" href="/css/site.css" />
+
+<div class="container">
+    <div class="left-nav">
+        <div class="logo">Expense Dashboard</div>
+        <ul>
+    <li class="@(currentPage == "/Index" ? "active" : "")">
+        <a asp-page="/Index">Dashboard</a>
+    </li>
+    <li class="@(currentPage == "/AddExpense" ? "active" : "")">
+        <a asp-page="/AddExpense">Add Expense</a>
+    </li>
+    <li class="@(currentPage == "/ViewExpenses" ? "active" : "")">
+        <a asp-page="/ViewExpenses">View Expenses</a>
+    </li>
+    <li class="@(currentPage == "/Reports" ? "active" : "")">
+        <a asp-page="/Reports">Reports</a>
+    </li>
+    <li class="@(currentPage == "/Settings" ? "active" : "")">
+        <a asp-page="/Settings">Settings</a>
+    </li>
+</ul>
+    </div>
+
+    <div class="main-expense-add">
+        <div class="card form-card">
+            <h2>Add New Expense</h2>
+            <form method="post">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input asp-for="NewExpense.Title" class="form-control" placeholder="e.g. Groceries" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input asp-for="NewExpense.Amount" type="number" step="0.01" class="form-control" placeholder="e.g. 50.00" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select asp-for="NewExpense.CategoryId" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))" class="form-control"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Date</label>
+                    <input asp-for="NewExpense.Date" 
+                           type="date" 
+                           class="form-control" 
+                           value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <div class="form-group">
+                    <label>Note</label>
+                    <textarea asp-for="NewExpense.Description" class="form-control"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Expense</button>
+                    <a href="/Index" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+        <div class="right-part">
+            <div class="card blue">
+                Total Expenses YTD<br />
+                <span class="amount" id="ytd">
+                    ₹@(Model.Expenses
+                        .Where(e => e.Date.Year == DateTime.Now.Year)
+                        .Sum(e => e.Amount)
+                        .ToString("0.00"))
+                </span>
+            </div>
+            <div class="recent" id="recentTx">
+                <h3>Recent Transactions</h3>
+                @if (Model.Expenses.Any())
+                {
+                    @foreach (var exp in Model.Expenses
+                        .OrderByDescending(e => e.Date)
+                        .Take(5))
+                    {
+                        <div>@exp.Title - ₹@exp.Amount.ToString("0.00") (@exp.Date.ToShortDateString())</div>
+                    }
+                }
+                else
+                {
+                    <p>No recent expenses.</p>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,159 @@
+﻿@page
+@model ExpenseDashboard.Api.Pages.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+}
+<link rel="stylesheet" href="/css/site.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container">
+    <div class="left-nav">
+        <div class="logo">Hello! WelCome</div>
+        <ul>
+    <li class="@(currentPage == "/Index" ? "active" : "")">
+        <a asp-page="/Index">Dashboard</a>
+    </li>
+    <li class="@(currentPage == "/AddExpense" ? "active" : "")">
+        <a asp-page="/AddExpense">Add Expense</a>
+    </li>
+    <li class="@(currentPage == "/ViewExpenses" ? "active" : "")">
+        <a asp-page="/ViewExpenses">View Expenses</a>
+    </li>
+    <li class="@(currentPage == "/Reports" ? "active" : "")">
+        <a asp-page="/Reports">Reports</a>
+    </li>
+    <li class="@(currentPage == "/Settings" ? "active" : "")">
+        <a asp-page="/Settings">Settings</a>
+    </li>
+</ul>
+
+    </div>
+
+    <div class="main">
+        <!-- ===== SUMMARY CARDS ===== -->
+        <div class="cards">
+            <div class="card teal">
+                Total Expenses This Month<br />
+                <span class="amount" id="totalThisMonth">
+                    ₹@(Model.Expenses
+                        .Where(e => e.Date.Month == DateTime.Now.Month && e.Date.Year == DateTime.Now.Year)
+                        .Sum(e => e.Amount)
+                        .ToString("0.00"))
+                </span>
+            </div>
+
+            <div class="card green">
+                Remaining Budget<br />
+                <span class="amount" id="remaining">
+                    ₹@((10000 - Model.Expenses
+                        .Where(e => e.Date.Month == DateTime.Now.Month && e.Date.Year == DateTime.Now.Year)
+                        .Sum(e => e.Amount))
+                        .ToString("0.00"))
+                </span>
+            </div>
+
+            <div class="card blue">
+                Total Expenses YTD<br />
+                <span class="amount" id="ytd">
+                    ₹@(Model.Expenses
+                        .Where(e => e.Date.Year == DateTime.Now.Year)
+                        .Sum(e => e.Amount)
+                        .ToString("0.00"))
+                </span>
+            </div>
+        </div>
+
+        <!-- ===== OVERVIEW SECTION ===== -->
+        <div class="overview">
+            <!-- Monthly Chart -->
+            <div class="chart" id="chartArea">
+                <h3>Monthly Overview</h3>
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="recent" id="recentTx">
+                <h3>Recent Transactions</h3>
+                @if (Model.Expenses.Any())
+                {
+                    @foreach (var exp in Model.Expenses
+                        .OrderByDescending(e => e.Date)
+                        .Take(5))
+                    {
+                        <div>@exp.Title - ₹@exp.Amount.ToString("0.00") (@exp.Date.ToShortDateString())</div>
+                    }
+                }
+                else
+                {
+                    <p>No recent expenses.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    var monthlyData = Model.Expenses
+        .GroupBy(e => e.Date.Month)
+        .Select(g => new {
+            Month = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(g.Key),
+            Total = g.Sum(e => e.Amount)
+        })
+        .OrderBy(g => g.Month)
+        .ToList();
+}
+
+<!-- ===== CHART SCRIPT ===== -->
+<script>
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+
+    const labels = [
+        @for (int i = 0; i < monthlyData.Count; i++)
+        {
+            <text>"@monthlyData[i].Month"@(i < monthlyData.Count - 1 ? "," : "")</text>
+        }
+    ];
+
+    const data = [
+        @for (int i = 0; i < monthlyData.Count; i++)
+        {
+            <text>@monthlyData[i].Total@(i < monthlyData.Count - 1 ? "," : "")</text>
+        }
+    ];
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Expenses (₹)',
+                data: data,
+                borderColor: '#2563EB',
+                backgroundColor: 'rgba(37,99,235,0.2)',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#2563EB',
+                pointRadius: 5,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: true },
+                title: {
+                    display: true,
+                    text: 'Monthly Expense Summary',
+                    font: { size: 18 }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true },
+                x: { ticks: { color: '#374151' } }
+            }
+        }
+    });
+</script>
