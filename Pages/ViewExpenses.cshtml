@@ -65,6 +65,24 @@
         <p class="total">@Model.Expenses.Sum(x => x.Amount).ToString("C")</p>
 
     </aside>
+
+    <nav class="bottom-nav mobile-only">
+    <a asp-page="/Index" class="@(currentPage == "/Index" ? "active" : "")">
+        🏠<span>Dashboard</span>
+    </a>
+    <a asp-page="/AddExpense" class="@(currentPage == "/AddExpense" ? "active" : "")">
+        ➕<span>Add</span>
+    </a>
+    <a asp-page="/ViewExpenses" class="@(currentPage == "/ViewExpenses" ? "active" : "")">
+        📄<span>Expenses</span>
+    </a>
+    <a asp-page="/Reports" class="@(currentPage == "/Reports" ? "active" : "")">
+        📊<span>Reports</span>
+    </a>
+    <a asp-page="/Settings" class="@(currentPage == "/Settings" ? "active" : "")">
+        ⚙️<span>Settings</span>
+    </a>
+</nav>
 </div>
 
 @section Scripts {

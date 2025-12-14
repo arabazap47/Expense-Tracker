@@ -23,16 +23,16 @@ namespace ExpenseDashboard.Api.Data
 
             context.Categories.AddRange(categories);
 
-            var expenses = new[]
-            {
-                new Expense { Title = "Groceries", Amount = 85.30m, Date = DateTime.UtcNow.Date, Category = categories[0] },
-                new Expense { Title = "Coffee", Amount = 4.50m, Date = DateTime.UtcNow.Date, Category = categories[1] },
-                new Expense { Title = "Dinner", Amount = 42.00m, Date = DateTime.UtcNow.Date.AddDays(-1), Category = categories[0] },
-                new Expense { Title = "Fuel", Amount = 0.00m, Date = DateTime.UtcNow.Date.AddDays(-2), Category = categories[2] },
-                new Expense { Title = "Online Course", Amount = 1999.99m, Date = DateTime.UtcNow.Date.AddDays(-10), Category = categories[3] }
-            };
+            //var expenses = new[]
+            //{
+            //    new Expense { Title = "Groceries", Amount = 85.30m, Date = DateTime.UtcNow.Date, Category = categories[0] },
+            //    new Expense { Title = "Coffee", Amount = 4.50m, Date = DateTime.UtcNow.Date, Category = categories[1] },
+            //    new Expense { Title = "Dinner", Amount = 42.00m, Date = DateTime.UtcNow.Date.AddDays(-1), Category = categories[0] },
+            //    new Expense { Title = "Fuel", Amount = 0.00m, Date = DateTime.UtcNow.Date.AddDays(-2), Category = categories[2] },
+            //    new Expense { Title = "Online Course", Amount = 1999.99m, Date = DateTime.UtcNow.Date.AddDays(-10), Category = categories[3] }
+            //};
 
-            context.Expenses.AddRange(expenses);
+            //context.Expenses.AddRange(expenses);
 
             var budget = new Budget
             {

@@ -42,3 +42,73 @@
                 opacity: 1;
                 color: #06b6d4;
             }
+
+
+/* =============================== */
+/* ===== MOBILE VIEW FIX ========= */
+/* =============================== */
+
+/*@media (max-width: 768px) {*/
+
+    /* Container stacks properly */
+    /*.container {
+        flex-direction: column;
+    }*/
+
+    /* Sidebar → Top Navigation */
+    /*.left-nav {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 10px 12px;
+        border-radius: 0;
+        background: #2f3a40;
+    }
+
+        .left-nav .logo {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }*/
+
+        /* Horizontal menu */
+        /*.left-nav ul {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            overflow-x: auto;
+            white-space: nowrap;
+            gap: 14px;
+            padding-bottom: 6px;
+        }
+
+        .left-nav li {
+            padding: 6px 10px;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+            .left-nav li a {
+                font-size: 14px;
+            }*/
+
+    /* Main content spacing */
+    /*.main {
+        padding: 12px;
+    }*/
+
+    /* Cards stack properly */
+    /*.cards {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }*/
+
+    /* Chart & recent stacked */
+    /*.overview {
+        grid-template-columns: 1fr;
+    }*/
+
+    /* Chart height fix */
+    /*.chart-container {
+        height: 240px;
+    }
+}*/

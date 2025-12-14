@@ -1,0 +1,160 @@
+﻿@page
+@model ExpenseDashboard.Api.Pages.ReportsModel
+@{
+    ViewData["Title"] = "Reports";
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+}
+
+
+<link rel="stylesheet" href="/css/site.css" />
+<link rel="stylesheet" href="/css/index.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container">
+
+    <!-- LEFT NAV (DESKTOP ONLY) -->
+     <div class="left-nav">
+            <div class="logo">Expense Dashboard</div>
+            <ul>
+        <li class="@(currentPage == "/Index" ? "active" : "")">
+            <a asp-page="/Index">Dashboard</a>
+        </li>
+        <li class="@(currentPage == "/AddExpense" ? "active" : "")">
+            <a asp-page="/AddExpense">Add Expense</a>
+        </li>
+        <li class="@(currentPage == "/ViewExpenses" ? "active" : "")">
+            <a asp-page="/ViewExpenses">View Expenses</a>
+        </li>
+        <li class="@(currentPage == "/Reports" ? "active" : "")">
+            <a asp-page="/Reports">Reports</a>
+        </li>
+        <li class="@(currentPage == "/Settings" ? "active" : "")">
+            <a asp-page="/Settings">Settings</a>
+        </li>
+    </ul>
+        </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- SUMMARY CARDS -->
+        <div class="cards">
+            <div class="card teal">
+                Total Expenses<br />
+                <span class="amount">₹@Model.TotalExpenses.ToString("0.00")</span>
+            </div>
+
+            <div class="card green">
+                This Month<br />
+                <span class="amount">₹@Model.ThisMonthExpenses.ToString("0.00")</span>
+            </div>
+
+            <div class="card blue">
+                Average / Month<br />
+                <span class="amount">₹@Model.AverageMonthlyExpenses.ToString("0.00")</span>
+            </div>
+        </div>
+
+        <!-- CHART -->
+        <div class="overview">
+            <div class="chart">
+                <h3>Monthly Expense Report</h3>
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- CATEGORY BREAKDOWN -->
+            <div class="recent">
+    <h3>Category Breakdown</h3>
+
+    <div style="height:260px;">
+        <canvas id="categoryChart"></canvas>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="bottom-nav mobile-only">
+        <a asp-page="/Index">🏠<span>Dashboard</span></a>
+        <a asp-page="/AddExpense">➕<span>Add</span></a>
+        <a asp-page="/ViewExpenses">📄<span>Expenses</span></a>
+        <a asp-page="/Reports" class="active">📊<span>Reports</span></a>
+    </nav>
+
+</div>
+
+<script>
+    const ctx = document.getElementById('monthlyChart');
+
+    const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthLabels));
+    const values = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthTotals));
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Expenses',
+                data: values,
+                borderColor: '#0ea5e9',
+                backgroundColor: 'rgba(14,165,233,0.25)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    const categoryLabels = @Html.Raw(
+        System.Text.Json.JsonSerializer.Serialize(
+            Model.CategoryTotals.Select(c => c.CategoryName)
+        )
+    );
+
+    const categoryValues = @Html.Raw(
+        System.Text.Json.JsonSerializer.Serialize(
+            Model.CategoryTotals.Select(c => c.Total)
+        )
+    );
+
+    if (categoryLabels.length > 0) {
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'pie',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    data: categoryValues,
+                    backgroundColor: [
+                        '#0ea5e9',
+                        '#22c55e',
+                        '#f97316',
+                        '#a855f7',
+                        '#ef4444',
+                        '#14b8a6',
+                        '#eab308'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+</script>
+
