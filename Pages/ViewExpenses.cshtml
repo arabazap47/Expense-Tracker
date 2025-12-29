@@ -25,9 +25,9 @@
     <li class="@(currentPage == "/Reports" ? "active" : "")">
         <a asp-page="/Reports">Reports</a>
     </li>
-    <li class="@(currentPage == "/Settings" ? "active" : "")">
+    @* <li class="@(currentPage == "/Settings" ? "active" : "")">
         <a asp-page="/Settings">Settings</a>
-    </li>
+    </li> *@
 </ul>
     </div>
 
@@ -79,9 +79,9 @@
     <a asp-page="/Reports" class="@(currentPage == "/Reports" ? "active" : "")">
         📊<span>Reports</span>
     </a>
-    <a asp-page="/Settings" class="@(currentPage == "/Settings" ? "active" : "")">
+    @* <a asp-page="/Settings" class="@(currentPage == "/Settings" ? "active" : "")">
         ⚙️<span>Settings</span>
-    </a>
+    </a> *@
 </nav>
 </div>
 

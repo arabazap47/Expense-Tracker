@@ -1,0 +1,38 @@
+﻿@page "{id:int}"
+@model ExpenseDashboard.Api.Pages.EditExpenseModel
+
+<h2 class="page-title">Edit Expense</h2>
+
+<div class="edit-container">
+    <form method="post" class="edit-form">
+
+        <input type="hidden" asp-for="Expense.Id" />
+
+        <div class="form-group">
+            <label>Date</label>
+            <input asp-for="Expense.Date" type="date" required />
+        </div>
+
+        <div class="form-group">
+            <label>Title</label>
+            <input asp-for="Expense.Title" required />
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+            <select asp-for="Expense.CategoryId" asp-items="Model.Categories">
+                <option value="">-- Select Category --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Amount</label>
+            <input asp-for="Expense.Amount" type="number" step="0.01" required />
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Update</button>
+            <a asp-page="/Index" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
